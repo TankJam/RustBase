@@ -11,23 +11,23 @@
 // 复合类型初体验
 
 #![allow(unused_variables)]  // 引入属性，避免声明变量后未使用导致warning警告
-type File = String; 
+type ExampleFile = String; 
 
-fn open(f: &mut File) -> bool{
+fn open(f: &mut ExampleFile) -> bool{
     true
 }
 
-fn close(f: &mut File) -> bool{
+fn close(f: &mut ExampleFile) -> bool{
     true
 }
 
 #[allow(dead_code)]
-fn read(f: &mut File, save_to: &mut Vec<u8>) -> !{  // 返回一个 ! 类型，表明该函数是一个 发散函数，不会返回任何值
+fn read(f: &mut ExampleFile, save_to: &mut Vec<u8>) -> !{  // 返回一个 ! 类型，表明该函数是一个 发散函数，不会返回任何值
     unimplemented!()  // 告诉编译器，该函数尚未实现
 }
 
 fn example(){
-    let mut f1 = File::from("f1.txt"); // 定义一个文件File类型，并且初始化为 f1.txt 文件
+    let mut f1 = ExampleFile::from("f1.txt"); // 定义一个文件File类型，并且初始化为 f1.txt 文件
     open(&mut f1);
     // read(&mut f1, &mut vec![]);
     close(&mut f1);
@@ -37,8 +37,39 @@ fn example(){
 }
 
 
-// 1、string 和 &str （字符串和切片）
-// 注意: Rust中的字符串是非常重要的 ”重点“
+/*
+    1、string 和 &str （字符串和切片）
+    注意: Rust中的字符串是非常重要的 ”重点“
+*/
+fn string_main(){
+    // // String 和 &str
+    string_and_str();
+
+    // // 切片Slice 
+    slice();
+
+    // // string 与 &str 转换
+    string_change_str();
+
+    // // 字符换索引
+    str_index();
+
+    // // 字符串操作
+    string_function();
+
+    // // 字符串转义
+    string_transfer();
+
+    // // 操作UTF-8字符串
+    doing_utf8_str();
+
+    // // 字符串剖析
+    str_question();
+
+    // // 字符串作业
+    str_work();
+}
+
 // 1.1 字符串
 fn string_and_str(){
     let my_name = "tank jam";  // 定义一个不可变的静态字符串类型
@@ -303,6 +334,7 @@ fn string_transfer(){
     let longer_delimier = r###"A string with "# in it. And even "###;
     println!("{}", longer_delimier);
 }
+
 // 1.10 操作UTF-8字符串
 fn doing_utf8_str(){
     // 字符
@@ -321,7 +353,9 @@ fn doing_utf8_str(){
     // 从UTF-8字符串中获取子串，标准库无法实现，需要通过utf8_slice库来实现
 }
 
-/*
+// 1.11 字符串深度剖析
+fn str_question(){
+    /*
     字符串深度剖析:
         问题1: String可变，字符串字面值str不可变
         答案1: 
@@ -338,8 +372,7 @@ fn doing_utf8_str(){
         在变量离开作用域后，就会自动释放其内存;
 
         其他语言需要手动使用 free 函数来释放内存，Rust会在 } 后面自动调用 drop 来实现内存释放
-*/ 
-fn str_question(){
+    */ 
     {
         let s = String::from("hello");  // 此处起始 s 有效
         // 使用s
@@ -347,9 +380,8 @@ fn str_question(){
         // s 不再有效，内存已被释放
 }
 
-/*
-    字符串作业
-*/ 
+
+// 1.12 字符串作业
 use std::str;
 use utf8_slice;
 fn str_work(){
@@ -448,10 +480,263 @@ fn greetings(s:String){
 }
 
 
-
  
-// - 元组
-// - 结构体
+/*
+    2、元组
+    元组是由多种类型组合而成，因此是复合类型，元组的长度是固定的，元组中的元素的顺序也是固定的;
+*/
+fn tup_main(){
+    // 绑定元组
+    let tup:(i32, f64, u8) = (500, 9.87, 1);
+    println!("tup: {:?}", tup);
+
+    // 模式匹配解构元组 （类似于py的解压赋值）
+    let(x, y, z) = tup;
+    println!("The x value is {}", x);
+
+    // 使用  .  访问元组某个特定元素 (根据元组值的索引获取指定下标的元素)
+    let tup2: (i32, f64, u8) = (9527, 9.527, 2);
+    let num1 = tup2.0;
+    let num2 = tup2.1;
+    let num3 = tup2.2;
+    println!("{} - {} - {}", num1, num2, num3);
+
+    // 元组的使用示例
+    let s1 = String::from("hello");
+    let (s2, len) = calculate_length(s1);
+    println!("Ther length of '{}' is {}", s2, len);
+}
+
+// 计算长度
+fn calculate_length(s: String) -> (String, usize){
+    let length = s.len();
+    (s, length)
+}   
+
+
+/*
+    3、结构体
+    可以存放不同类型的元素，并且可以给元素命名;
+*/
+fn struct_main(){
+    // 3.1 定义结构体
+
+    /*
+       3.2 创建结构体实例
+       注意:
+          1.初始化实例时，每个字段都需要进行初始化;
+          2.初始化时字段的顺序可以是无序的;
+    */ 
+    let user1 = User{
+        active: true,
+        username: String::from("tank jam"),
+        email: String::from("tankjam.com"),
+        sign_in_count: 1,
+    };
+
+    // 3.3 访问结构体字段
+    // 获取
+    println!("{}", user1.email);
+    // 修改 注意: 必须在定义阶段，声明为可变结构体，不能对某一个字段设置为可变
+    // user1.email = String::from("xxx.com");
+    // 
+
+    // 3.4 简化结构体创建
+    // 调用构建函数
+    let user_obj = build_user(String::from("zhangquandan.com"), String::from("张全蛋"));
+
+    // 3.5 结构体更新语法
+    // 更新user_obj对象的email字段
+    let user2 = User{
+        email: String::from("tankjam9527.com"),
+        ..user_obj // 将没有更新的字段全部传给user2
+        // 只有username是将所有权转移给user2，active和sign_in_count是发生了拷贝（Copy特征）
+        // 那么user_obj中只有username字段不可用，其他字段还是可以继续使用的;
+    };
+    println!("user_obj.active: {}", user_obj.active);
+    // 报错
+    // println!("user_obj.username: {}", user_obj.username);
+
+    // 3.6 结构体内存排序
+    let f1 = File{
+        name: String::from("f1.txt"),
+        data: Vec::new(),
+    };
+    let f1_name = &f1.name; // 将f1对象指针（引用类型）中的name字段 所有权 转移给了f1_name变量
+    let f1_length = &f1.data.len(); // 将 f1 底层指针对应的数组长度，赋于 f1_length
+
+    // println!("{:?}", f1);  // 因为f1中的name字段所有权已经被转移了
+    println!("{} is {} bytes long", f1_name, f1_length);
+
+    // 3.7 元组结构体
+    // 结构体必须要有名称，但是结构体的字段可以没有名字，长得很像元组，因此称之为 "元组结构体";
+    let black = Color(0, 0, 0);   // 通过结构体构造 px 是 黑色的对象
+    let origin = Point(0, 0, 0);  // 通过结构体构造 px 是 橙色的对象
+
+    // 3.8 单元结构体（Unit-like Struct）
+    // 与基本类类型的 单元 类型很像，没有任何 “字段和属性”，但是它还有非常有用;
+    // 若定义一个类型，不关心其类型的内容，只关心它的行为，建议使用 “单元结构体” 
+    // 空属性结构体 --> 是需要绑定方法
+    let subject = AlwaysEqual;
+    // 绑定SomeTrait方法
+
+    // 3.9 结构体数据的所有权
+    // 在User结构体中，使用了String类型，而不是引用 &str 切片类型，因为想要让结构体拥有它所有的数据，
+    // 而不是引用其他地方的数据，若想让结构体从其他对象借用数据，需要引入生命周期的概念，这样能确保结构体
+    // 的作用范围比借用的数据作用域范围小;
+    // let stu = Student{
+    //     name: "张全蛋",
+    //     email: "xxx.com",
+    //     active: true,
+    // };
+
+    // 3.10 使用 #[derive(Debug)] 来打印结构体的信息
+    // rust中打印结构体需要使用 #[derive(Debug)] 来进行标记，才能使用 println!("{:?}", obj);
+    // 如果不加则会报错;
+    let rect1 = Rectangle {
+        width: 500,
+        height: 250,
+    };
+    // 报错: ectangle` cannot be formatted with the default formatter
+    // println!("{}", rect1);
+    // 报错: Rectangle` cannot be formatted using `{:?}`
+    // println!("{:?}", rect1);
+
+    /*
+        结构体 使用 #[derive(Debug)] 就不会报错:
+        Rust默认不会提供Debug，为了实现Debug有两种方式:
+            · 手动实现（定制化）
+            · 使用derive派生实现（推荐，但有限制）
+    */ 
+    println!("{:?}", rect1);
+    println!("{:#?}", rect1);  // 样式优化输出 :#?
+
+    // 利用宏也可以输出结构体信息, 可以打印 文件名、行号等Debug信息、表达式的求值结果，还可以把表达式值的所有权返回;
+    // dbg!     输出到标准错误输出  stderr
+    // println! 输出到标准输出     stdout
+    let scale = 2;
+    let rect2 = Rectangle{
+        width: dbg!(30 * scale),
+        height: 50,
+    };
+    dbg!(&rect2);  // 将 30 * scale 表达式的值返回
+    /*
+    [src/main.rs:619] 30 * scale = 60
+    [src/main.rs:622] &rect2 = Rectangle {
+        width: 60,
+        height: 50,
+    }
+    */
+
+    // 3.11 作业
+    struct_work();
+}
+
+/*
+- 定义结构体 (3.1)
+    · 通过关键字 “struct” 定义
+    · 一个清晰明确的结构体 “名称”
+    · 几个有名字的结构体 “字段”
+*/ 
+struct User{
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count:u64,
+}
+
+// 构建结构体 (3.4)
+fn build_user(email: String, username: String) -> User {
+    // 传统构建，有点鸡肋
+    // User{
+    //     email: email,
+    //     username:username,
+    //     active: true,
+    //     sign_in_count:1,
+    // }
+
+    // 简化结构体
+    User{
+        email,
+        username,
+        active: true,
+        sign_in_count:1,
+    }
+
+}
+
+// 文件结构体（3.6）
+struct File{
+    name: String,
+    data: Vec<u8>,  // Vec<u8> 整型动态数组
+}
+
+// 元组结构体 (3.7)
+struct Color(i32, i32, i32);  
+struct Point(i32, i32, i32);
+
+// 单元结构体（3.8）
+struct AlwaysEqual;
+// 结构体AlwaysEqual绑定SomeTrait方法
+// impl SomeTrait for AlwaysEqual{}
+
+// 结构体数据的所有权（3.9）
+// // 结构体引用其他对象
+// struct Student {
+//     // error: missing lifetime specifier
+//     name: &str, //引用类型
+//     email: &str,
+//     active: bool,
+// }
+
+// 使用 #[derive(Debug)] 来打印结构体的信息 (3.10)
+#[derive(Debug)] 
+struct Rectangle{
+    width: u32,
+    height: u32,
+}
+
+// 结构体作业 (3.11)
+fn struct_work(){
+    // 1.
+    let v = Color2(0, 127, 255);
+    check_color(v);
+
+    // 2.
+    let f = File3 {
+        name: String::from("readme.md"),
+        data: "Rust By Practice".to_string()
+    };
+    let _name = f.name;
+    // ONLY modify this line
+    println!("{}, {}",_name, f.data);
+
+    // 3. 没看懂
+    // let num = Some(4);
+    // let split = 5;
+    // match num {
+    //     Some(x) __ => assert!(x < split),
+    //     Some(x) => assert!(x >= split),
+    //     None => (),
+    // }
+}
+// 定义元组结构体
+struct Color2(i32, i32, i32);
+struct Point2(i32, i32, i32);
+fn check_color(obj: Color2){
+    let x = obj.0;
+    assert_eq!(x, 0);
+    assert_eq!(obj.1, 127); // 元组结构体，需要通过索引来获取对应的元素
+    assert_eq!(obj.2, 255); 
+}
+
+#[derive(Debug)]
+struct File3 {
+    name: String,
+    data: String,
+}
+
+
 // - 枚举
 // - 数组
 
@@ -461,32 +746,12 @@ fn main() {
     example();
 
     // 1.字符串
-    // String 和 &str
-    string_and_str();
-
-    // 切片Slice 
-    slice();
-
-    // string 与 &str 转换
-    string_change_str();
-
-    // 字符换索引
-    str_index();
-
-    // 字符串操作
-    string_function();
-
-    // 字符串转义
-    string_transfer();
-
-    // 操作UTF-8字符串
-    doing_utf8_str();
-
-    // 字符串剖析
-    str_question();
-
-    // 字符串作业
-    str_work();
+    string_main();
 
     // 2.元组
+    tup_main();
+
+    // 3.结构体
+    struct_main();
+    
 }
