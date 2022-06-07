@@ -737,8 +737,155 @@ struct File3 {
 }
 
 
-// - 枚举
-// - 数组
+/*
+    4、枚举:
+        enum或enumerate 允许通过列举可能的成员来定义 “枚举模型”, 例如扑克牌花色;
+        · 枚举类型
+        · 枚举值
+        总结: 枚举类型是一个类型，枚举值是某个枚举成员的实例;
+*/ 
+// 定义扑克牌枚举类型
+#[derive(Debug)]
+enum PokerSuit{
+    Clubs,
+    Spades,
+    Diamonds,
+    Hearts,
+}
+
+// 打印枚举成员
+fn print_suit(card: PokerSuit){
+    println!("{:?}", card);
+}
+
+// 定义扑克牌结构体
+// struct PockerCard{
+//     // 麻烦
+//     suit: PokerSuit, // ♠ ♥ ♣ 方块
+//     value: u8,  // 1-13
+// }
+
+// 简化枚举
+enum PockerCard{
+    Clubs(u8),
+    Spades(u8),
+    Diamonds(char),
+    Hearts(char),
+}
+
+// 枚举中的成员可以是 任何类型的数据
+enum Message {
+    Quit,
+    Move {x: i32, y: i32},
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+// 同一化管理 4.4
+// enum WebSocket{
+//     Tcp(WebSocket<TcpStream>),
+//     Tls(WebSocket<native_tls::TlsStream<TcpStream>>)
+// }
+// fn new(stream: TcpStream){
+//     let mut s = stream;
+//     if tls {
+//         s = negotiate_tls(stream)
+//     }
+
+//     // websocket:  WebSocket<TcpStream>  or WebSocket<native_tls::TlsStream<TcpStream>> 类型
+//     websocket = WebSocket::from_raw_socket(stream, ...)
+// }
+
+// 4.5 Option枚举用于处理空值
+// 这是标准库中实现的一个Option枚举 （prelude）
+// enum Option<T>{
+//     Some(T),  // T是泛型，表示该枚举成员的数据类型是T，Some可以包含任何类型的数据
+//     None,
+// }
+fn plus_one(x: Option<i32>) -> Option<i32>{
+    match x {
+        None => None,
+        Some(i) => Some(i + 1),
+    }
+}
+
+
+// 枚举
+fn enum_main(){
+    // 4.1 枚举值
+    // // 创建枚举两个成员实例
+    let heart = PokerSuit::Hearts;  // 通过 枚举名::成员 的方式来访问 
+    let diamond = PokerSuit::Diamonds;
+
+    // 4.2 打印枚举成员
+    print_suit(heart);
+    print_suit(diamond);
+
+    // 4.3 实现扑克牌功能
+    // enum + struct 麻烦
+    // let c1 = PockerCard{
+    //     suit: PokerSuit::Clubs,
+    //     value: 1,
+    // };
+
+    // let c2 = PockerCard{
+    //     suit: PokerSuit::Diamonds,
+    //     value: 12,
+    // };
+
+    // enum实现, 将数据关联到枚举成员上，省去一半代码
+    let c1 = PockerCard::Spades(5);
+    let c2 = PockerCard::Spades(13);
+    
+    // 将1-13 改为  字母 A...
+    let c3 = PockerCard::Diamonds('A');
+    let c4 = PockerCard::Hearts('D');
+
+    /*
+        1.3 枚举中的成员可以是 任何类型的数据
+            · Quit 没有任何关联数据
+            · Move 包含一个匿名结构体
+            · Write 包含一个String字符串
+            · ChangeColor 包含三个 i32
+    */
+    let m1 = Message::Quit;
+    let m2 = Message::Move{x:1, y:2};
+    let m3 = Message::ChangeColor(255,255,0);
+
+    // 4.4 同一化类型
+    // 假设有个web服务，需要接受用户的长连接，假设连接有两种: TcpStream、TlsStream, 
+    // 但是希望两个连接处理流程相同，调用同一个函数来处理这两个连接;
+
+    // 4.5 Option 枚举用于处理空值
+    // Rust抛弃null，而改为使用Option枚举变量来表述空值
+    let some_number = Some(5);
+    let some_string = Some("some string");
+    // 使用None作为空值
+    let absent_number:Option<i32> = None;
+    // Option<T> 为什么比空值好;
+    let x:i8 = 5;
+    let y:Option<i8> = Some(5);
+    // 类型不同，所以报错
+    // let sum = x + y; // no implementation for `i8 + Option<i8>`
+    // 利用 Option<T> 更好捕获空值: 期望某值不为空，但实际上为空，避免程序在运行过程中因为空值导致报错程序崩溃
+    // 不再担心会错误使用一个空值引发的错误，只要一个值不是 Option<T> 类型，那么它就不会存在空值。
+    // 这是Rust用来限制空值泛滥以增加Rust代码的安全性;
+
+    // 使用match来配合Option<T>控制流程结构，会根据枚举的成员运行不同的代码，从而匹配不同
+    // 通过match来处理不同的Option情况
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);  
+}
+
+
+
+
+
+
+/*
+    5、数组
+*/ 
 
 
 fn main() {
@@ -753,5 +900,8 @@ fn main() {
 
     // 3.结构体
     struct_main();
+
+    // 4.枚举
+    enum_main();
     
 }
