@@ -1,6 +1,41 @@
-# RustBase
-Rust基础学习
-
-## 
-
-## 
+# Rust学习
+## 目录结构
+```rust
+- base-init: 快速开始，初始rust
+- base-01: rust基础入门
+    - 变量绑定与解构
+    - 基本类型
+    - 所有权和借用
+    - 复合类型
+    - 流程控制
+    - 模式匹配
+    - 方法Method
+    - 泛型和特征
+    - 集合类型
+    - 类型转换
+    - 返回值的和错误处理
+    - 包和模块
+    - 注释和文档
+    - 格式化输出
+- base-02: rust高级进阶 
+    - 生命周期
+    - 函数式编程: 闭包、迭代器
+    - 深入类型
+    - 智能指针
+    - 循环引用与自引用
+    - 多线程并发编程
+    - 全局变量
+    - 错误处理
+    - Unsafe Rust
+    - Macro 宏编程
+- base-03: 异步编程
+    - aynsc/await 异步编程
+    - Tokio 使用指南
+- base-04: rust难点公关
+    - 切片和切片引用
+    - Eq 和 PartialEq
+    - String、&str 和 str TODO
+    - 作用域、生命周期和 Nll TODO
+    - move、Copy 和 Clone TODO
+    - 裸指针、引用和智能指针 TODO
+```
